@@ -28,7 +28,6 @@ export const getAssumedCredentials = async function (req, res) {
       credentials.secretAccessKey = secretAccessKey;
       credentials.sessionToken = sessionToken;
 
-      console.log("✅ Credentials updated:", credentials);
     }
 
     return res.status(200).json({
