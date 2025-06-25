@@ -11,7 +11,7 @@ export const getAssumedCredentials = async function (req, res) {
     if (!roleArn || !externalId || !region) {
       return res
         .status(400)
-        .json({ message: "Role Arn and External Id are required" });
+        .json({ message: "Role Arn , External Id and Region are required" });
     }
 
     let { accessKeyId, secretAccessKey, sessionToken } =

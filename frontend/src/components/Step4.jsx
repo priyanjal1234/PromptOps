@@ -1,7 +1,13 @@
 import { CheckCircle, Cloud } from "lucide-react";
 import React from "react";
 
-const Step4 = ({ assumeRole, handleAssumeRoleChange,disabled,connectToAWS,setCurrentStep }) => {
+const Step4 = ({
+  assumeRole,
+  handleAssumeRoleChange,
+  disabled,
+  connectToAWS,
+  setCurrentStep,
+}) => {
   return (
     <div className="space-y-8">
       <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
@@ -28,7 +34,7 @@ const Step4 = ({ assumeRole, handleAssumeRoleChange,disabled,connectToAWS,setCur
                     </div> */}
 
           <div>
-            <h3 className="font-bold mb-3">2. Enter Role ARN</h3>
+            <h3 className="font-bold mb-3">1. Enter Role ARN</h3>
             <input
               type="text"
               placeholder="arn:aws:iam::123456789012:role/PromptOpsExecutionRole"
@@ -45,6 +51,15 @@ const Step4 = ({ assumeRole, handleAssumeRoleChange,disabled,connectToAWS,setCur
               value={assumeRole.externalId}
               onChange={handleAssumeRoleChange}
               name="externalId"
+            />
+            <h3 className="font-bold mt-3 mb-3">3. Enter Region</h3>
+            <input
+              type="text"
+              placeholder="if the region is global then us-east-1 is a good choice"
+              className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              value={assumeRole.region}
+              onChange={handleAssumeRoleChange}
+              name="region"
             />
           </div>
 
@@ -64,30 +79,6 @@ const Step4 = ({ assumeRole, handleAssumeRoleChange,disabled,connectToAWS,setCur
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-500/30 rounded-2xl p-8 text-center">
-        <CheckCircle className="h-16 w-16 text-green-400 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold mb-4">You're All Set!</h3>
-        <p className="text-slate-300 mb-6">
-          Your AWS account is now securely connected to PromptOps. You can start
-          creating infrastructure with natural language prompts.
-        </p>
-        <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105">
-          Go to Dashboard
-        </button>
-      </div>
-
-      <div className="flex justify-between">
-        <button
-          onClick={() => {
-            setCurrentStep(3);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-          className="border border-slate-600 hover:border-slate-500 px-6 py-3 rounded-lg font-medium transition-all duration-200"
-        >
-          Previous
-        </button>
       </div>
     </div>
   );

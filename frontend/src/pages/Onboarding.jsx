@@ -12,7 +12,7 @@ import {
   Settings,
   ArrowRight,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import cloudService from "../services/Cloud";
 import { toast } from "react-toastify";
 import OnNav from "../components/OnNav";
@@ -30,7 +30,9 @@ const Onboarding = () => {
   const [assumeRole, setassumeRole] = useState({
     roleArn: "",
     externalId: "",
+    region: ""
   });
+  let navigate = useNavigate()
 
   const copyToClipboard = (text, key) => {
     navigator.clipboard.writeText(text);
@@ -93,6 +95,7 @@ const Onboarding = () => {
       await cloudService.connectAccount(assumeRole);
       toast.success("AWS Connection Successfull");
       setdisabled(true);
+      navigate("/all-set")
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Error in connecting with AWS"

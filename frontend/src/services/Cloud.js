@@ -17,6 +17,18 @@ class CloudService {
       throw error;
     }
   }
+
+  async promptDone(prompt) {
+    try {
+      return await this.api.post(
+        `${this.baseUrl}/prompt`,
+        { prompt },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 let cloudService = new CloudService();
