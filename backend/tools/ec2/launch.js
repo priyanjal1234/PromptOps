@@ -14,12 +14,12 @@ export const functionDeclaration = {
   parameters: {
     type: "object",
     properties: {
-      region: { type: "string" },
+      region: { type: "string",default: "us-east-1" },
       instanceType: { type: "string", default: "t2.micro" },
       count: { type: "number", default: 1 },
       amiId: { type: "string", description: "Optional custom AMI ID" },
     },
-    required: ["region"],
+    required: ["region"]
   },
   response: {
     type: "object",

@@ -1,16 +1,16 @@
 import {
   EC2Client,
+  TerminateInstancesCommand,
   DescribeInstancesCommand,
-  StopInstancesCommand,
 } from "@aws-sdk/client-ec2";
 import { getAwsClient } from "../../utils/awsClient.js";
 
 /* ─────────────────────────────────────────────
- * 1️⃣ Gemini-compatible function declaration
+ * 1️⃣ Gemini Function Declaration
  * ───────────────────────────────────────────── */
 export const functionDeclaration = {
-  name: "stopEC2Instances",
-  description: "Stop one or more running EC2 instances",
+  name: "terminateEC2Instances",
+  description: "Terminate one or more EC2 instances",
   parameters: {
     type: "object",
     properties: {
@@ -20,9 +20,9 @@ export const functionDeclaration = {
       },
       instanceIds: {
         type: "array",
-        description:
-          "List of EC2 instance IDs to stop. If empty or omitted, all instances in the region will be stopped.",
         items: { type: "string" },
+        description:
+          "List of EC2 instance IDs to terminate. Leave empty or omit to terminate all instances in the region.",
         default: [],
       },
     },
@@ -31,7 +31,7 @@ export const functionDeclaration = {
   response: {
     type: "object",
     properties: {
-      stopped: { type: "array", items: { type: "string" } },
+      terminated: { type: "array", items: { type: "string" } },
       state: { type: "string" },
       message: { type: "string" },
     },
@@ -40,17 +40,18 @@ export const functionDeclaration = {
 };
 
 /* ─────────────────────────────────────────────
- * 2️⃣ Helper: fetch all EC2 instance IDs
+ * 2️⃣ List All Non-Terminated Instance IDs
  * ───────────────────────────────────────────── */
-async function listAllInstanceIds(region) {
+async function listTerminatableInstanceIds(region) {
   const ec2 = getAwsClient(EC2Client, region);
-
   const result = await ec2.send(new DescribeInstancesCommand({}));
+
   const instanceIds = [];
 
   for (const res of result.Reservations || []) {
     for (const inst of res.Instances || []) {
-      if (inst.State.Name === "running") {
+      const state = inst.State?.Name;
+      if (state !== "terminated" && state !== "shutting-down") {
         instanceIds.push(inst.InstanceId);
       }
     }
@@ -59,41 +60,46 @@ async function listAllInstanceIds(region) {
   return instanceIds;
 }
 
-
 /* ─────────────────────────────────────────────
- * 3️⃣ Handler logic
+ * 3️⃣ Handler
  * ───────────────────────────────────────────── */
 export const handler = async ({ region, instanceIds = [] }) => {
   const ec2 = getAwsClient(EC2Client, region);
 
   try {
-    let idsToStop = instanceIds;
+    let idsToTerminate = instanceIds;
 
-    // If empty, get all instance IDs
-    if (!Array.isArray(idsToStop) || idsToStop.length === 0) {
-      idsToStop = await listAllInstanceIds(region);
+    // If no specific IDs provided, list all
+    if (!Array.isArray(idsToTerminate) || idsToTerminate.length === 0) {
+      idsToTerminate = await listTerminatableInstanceIds(region);
     }
 
-    if (idsToStop.length === 0) {
+    if (idsToTerminate.length === 0) {
       return {
-        stopped: [],
+        terminated: [],
         state: "ok",
-        message: "✅ No instances found to stop.",
+        message: "✅ No running/stoppable instances found to terminate.",
       };
     }
 
-    await ec2.send(new StopInstancesCommand({ InstanceIds: idsToStop }));
+    const result = await ec2.send(
+      new TerminateInstancesCommand({ InstanceIds: idsToTerminate })
+    );
+
+    const terminated = (result.TerminatingInstances || []).map(
+      (inst) => inst.InstanceId
+    );
 
     return {
-      stopped: idsToStop,
+      terminated,
       state: "ok",
-      message: `🛑 Stop initiated for ${idsToStop.length} instance(s).`,
+      message: `🗑️ Termination initiated for ${terminated.length} instance(s).`,
     };
   } catch (err) {
     return {
-      stopped: [],
+      terminated: [],
       state: "error",
-      message: `${err.message}`,
+      message: `AWS ERROR: ${err.message}`,
     };
   }
 };
