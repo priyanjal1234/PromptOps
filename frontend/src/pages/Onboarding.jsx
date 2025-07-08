@@ -32,6 +32,7 @@ const Onboarding = () => {
     externalId: "",
     region: ""
   });
+  const [testLoading, settestLoading] = useState(false)
   let navigate = useNavigate()
 
   const copyToClipboard = (text, key) => {
@@ -87,12 +88,15 @@ const Onboarding = () => {
   }
 
   async function connectToAWS() {
+    settestLoading(true)
     if (!assumeRole.roleArn || !assumeRole.externalId) {
+      settestLoading(false)
       return;
     }
 
     try {
       await cloudService.connectAccount(assumeRole);
+      settestLoading(false)
       toast.success("AWS Connection Successfull");
       setdisabled(true);
       navigate("/all-set")
@@ -152,7 +156,7 @@ const Onboarding = () => {
             )}
 
             {currentStep === 4 && (
-              <Step4 assumeRole = {assumeRole} handleAssumeRoleChange = {handleAssumeRoleChange} disabled = {disabled} connectToAWS = {connectToAWS} setCurrentStep = {setCurrentStep} />
+              <Step4 assumeRole = {assumeRole} handleAssumeRoleChange = {handleAssumeRoleChange} disabled = {disabled} connectToAWS = {connectToAWS} setCurrentStep = {setCurrentStep} testLoading = {testLoading} />
             )}
           </div>
         </div>

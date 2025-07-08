@@ -7,6 +7,7 @@ const Step4 = ({
   disabled,
   connectToAWS,
   setCurrentStep,
+  testLoading,
 }) => {
   return (
     <div className="space-y-8">
@@ -76,6 +77,7 @@ const Step4 = ({
             >
               <CheckCircle className="h-5 w-5" />
               Test AWS Connection
+              {testLoading && <div className="loader"></div>}
             </button>
           </div>
         </div>
