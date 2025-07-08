@@ -74,13 +74,25 @@ export const logoutUser = function (req, res) {
     res.clearCookie("token");
     return res.status(200).json({ message: "Logout Successfull" });
   } catch (error) {
+    return res.status(500).json({
+      message:
+        error instanceof Error
+          ? error.message
+          : "Error in logging out the user",
+    });
+  }
+};
+
+export const getLoggedinUser = async function (req, res) {
+  try {
+    let user = await userModel.findOne({ email: req.user.email });
+    return res.status(200).json(user);
+  } catch (error) {
     return res
       .status(500)
       .json({
         message:
-          error instanceof Error
-            ? error.message
-            : "Error in logging out the user",
+          error instanceof Error ? error.message : "Error getting the user",
       });
   }
 };

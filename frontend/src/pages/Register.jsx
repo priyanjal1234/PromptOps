@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Terminal,
@@ -13,9 +13,9 @@ import {
 import registerSchema from "../schemas/registerSchema";
 import userService from "../services/User";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoggedin } from "../redux/reducers/UserReducer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = ({ onBack, onLogin }) => {
   const [formData, setFormData] = useState({
@@ -28,6 +28,17 @@ const Register = ({ onBack, onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   let dispatch = useDispatch();
   let navigate = useNavigate();
+  let {isLoggedin} = useSelector(state => state.user)
+
+  useEffect(() => {
+    if(isLoading) {
+      return navigate("/onboarding")
+    }
+    else {
+      return navigate("/register")
+    }
+  },[])
+
 
   function handleRegisterChange(e) {
     let { name, value } = e.target;
@@ -215,12 +226,12 @@ const Register = ({ onBack, onLogin }) => {
           <div className="text-center mt-6">
             <p className="text-slate-400">
               Already have an account?{" "}
-              <button
-                onClick={onLogin}
+              <Link
+                to={'/login'}
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
                 Sign in here
-              </button>
+              </Link>
             </p>
           </div>
         </div>

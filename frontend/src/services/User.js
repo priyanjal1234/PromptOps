@@ -35,6 +35,14 @@ class UserService {
       throw error;
     }
   }
+
+  async getLoggedinUser() {
+    try {
+      return await this.api.get(`${this.baseUrl}/`)
+    } catch (error) {
+      
+    }
+  }
 }
 
 let userService = new UserService();

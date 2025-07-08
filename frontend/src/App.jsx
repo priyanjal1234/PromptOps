@@ -5,6 +5,7 @@ import Onboarding from "./pages/Onboarding";
 import Register from "./pages/Register";
 import AllSet from "./components/AllSet";
 import Chat from "./pages/Chat";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/login" element = {<Login />}/>
       <Route path="/all-set" element={<AllSet />} />
       <Route path="/chat" element={<Chat />} />
     </Routes>
