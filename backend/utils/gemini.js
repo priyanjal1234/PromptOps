@@ -14,7 +14,7 @@ async function main(prompt, retries = 5, backoff = 1000) {
   while (attempt < retries) {
     try {
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-pro-latest",
+        model: "gemini-1.5-flash",
         tools: [{ functionDeclarations: toolDeclarations }],
         functionCallingConfig: { mode: "ANY" },
       });
