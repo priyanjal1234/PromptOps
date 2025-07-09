@@ -101,6 +101,7 @@ const Onboarding = () => {
       setdisabled(true);
       navigate("/all-set")
     } catch (error) {
+      settestLoading(false)
       toast.error(
         error instanceof Error ? error.message : "Error in connecting with AWS"
       );
